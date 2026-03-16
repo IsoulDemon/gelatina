@@ -181,8 +181,12 @@
   <div class="step active" id="step-1">
     <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
          alt="Logo Mounjaro" style="width:180px; object-fit:contain; margin-top:6px;">
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_mounjaro-9GIFZ8IF.jpg?raw=true"
-         alt="Gelatina Mounjaro" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:260px;">
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/629c0a14edc23666d96c0a02a89b57f8.jpg?raw=true"
+         alt="Depoimento Maria Clara" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:300px;">
+    <div style="text-align:center; margin-top:-8px;">
+      <p style="font-size:0.88rem; font-weight:800; color:var(--text);">Maria Clara • Campinas</p>
+      <p style="font-size:0.82rem; font-weight:600; color:var(--muted); margin-top:2px;">testou Gelatina Mounjaro há 1 mês</p>
+    </div>
     <h1 class="step-title">Descubra como ativar seu metabolismo e perder até <span class="text-pink bold">12kg em 30 dias</span></h1>
     <p class="step-subtitle">Com ingredientes caseiros que você prepara em minutos.</p>
     <div class="stat-row">
@@ -847,12 +851,6 @@
 
   function nextStep() {
     state.currentStep = Math.min(state.totalSteps, state.currentStep + 1);
-    showStep(state.currentStep);
-  }
-
-  function prevStep() {
-    if (state.currentStep <= 1) return;
-    state.currentStep--;
     showStep(state.currentStep);
   }
 
