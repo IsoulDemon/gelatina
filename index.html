@@ -853,7 +853,7 @@
   };
 
   function showStep(n) {
-    // Se estava no passo do vídeo e está saindo, para e descarrega
+    // Se estava no vídeo e está saindo, pausa
     if (state.currentStep === 24 && n !== 24) stopVid();
 
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -997,11 +997,14 @@
   function startLoading2() { runLoading('l2-', 6, 'loading2-bar', 'loading2-pct', 1.7, null, nextStep); }
 
   let vidInterval = null;
+  let vidLoaded = false;
+
   function startVidProgress() {
-    // Injeta o src do vídeo somente agora que o usuário chegou nessa tela
     const iframe = document.getElementById('video-panda');
-    if (iframe && !iframe.src) {
-      iframe.src = iframe.dataset.src;
+    // Só injeta o src uma vez — evita recarregar
+    if (iframe && !vidLoaded) {
+      iframe.setAttribute('src', iframe.getAttribute('data-src'));
+      vidLoaded = true;
     }
 
     const fill = document.getElementById('vid-progress');
@@ -1019,9 +1022,11 @@
   }
 
   function stopVid() {
-    // Para e descarrega o vídeo ao sair da aba
+    // Pausa o vídeo via postMessage sem remover o src (evita recarregar)
     const iframe = document.getElementById('video-panda');
-    if (iframe) iframe.src = '';
+    if (iframe && vidLoaded) {
+      try { iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e) {}
+    }
     if (vidInterval) clearInterval(vidInterval);
   }
 
