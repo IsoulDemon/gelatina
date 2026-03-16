@@ -149,7 +149,7 @@
     .week-row { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:var(--radius); background:white; box-shadow:var(--shadow); width:100%; }
 
     /* VIDEO */
-    .video-wrap { width:100%; border-radius:var(--radius); overflow:hidden; background:black; position:relative; padding-top:56.25%; }
+    .video-wrap { width:100%; border-radius:var(--radius); overflow:hidden; background:black; position:relative; padding-top:177.78%; /* 9:16 vertical */ }
     .video-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
     .video-progress-track { width:100%; height:8px; background:rgba(255,255,255,0.2); border-radius:99px; overflow:hidden; margin-top:8px; }
     .video-progress-fill { height:100%; background:linear-gradient(90deg,var(--purple),var(--pink)); border-radius:99px; width:0%; transition:width 0.5s; }
@@ -185,7 +185,7 @@
 
 <div id="progress-container" style="display:none;">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-    <button id="btn-back" onclick="prevStep()">&#8592;</button>
+    <button id="btn-back">&#8592;</button>
     <div id="progress-bar-track" style="flex:1;"><div id="progress-bar-fill" style="width:0%"></div></div>
   </div>
   <div id="progress-label">Passo <span id="prog-cur">1</span> de <span id="prog-total">28</span></div>
@@ -197,9 +197,9 @@
        PASSO 1 — WELCOME
   ══════════════════════════════════ -->
   <div class="step active" id="step-1">
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
          alt="Logo Mounjaro" style="width:180px; object-fit:contain; margin-top:6px;">
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/629c0a14edc23666d96c0a02a89b57f8.jpg?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/629c0a14edc23666d96c0a02a89b57f8.jpg?raw=true"
          alt="Depoimento Maria Clara" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:300px;">
     <div style="text-align:center; margin-top:-8px;">
       <p style="font-size:0.88rem; font-weight:800; color:var(--text);">Maria Clara • Campinas</p>
@@ -219,11 +219,11 @@
        PASSO 2 — INÍCIO QUIZ
   ══════════════════════════════════ -->
   <div class="step" id="step-2">
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
          alt="Logo Mounjaro" style="width:160px; object-fit:contain;">
     <h2 class="step-title">Vamos começar sua jornada! 🚀</h2>
     <p class="step-subtitle">Responda algumas perguntas rápidas para personalizar seu plano.</p>
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_mounjaro-9GIFZ8IF.jpg?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_mounjaro-9GIFZ8IF.jpg?raw=true"
          alt="Gelatina Mounjaro" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:240px;">
     <button class="btn-primary" onclick="nextStep()">Vamos lá! 💪</button>
   </div>
@@ -236,19 +236,19 @@
     <p class="step-subtitle">Selecione a opção que melhor te descreve</p>
     <div class="body-options">
       <div class="body-card" onclick="selectBody(this,'medio')">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2020_50_06.png?raw=true" alt="Médio">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2020_50_06.png?raw=true" alt="Médio">
         Médio
       </div>
       <div class="body-card" onclick="selectBody(this,'sobrepeso')">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/body_sobrepeso-Cp8blCgD.jpg?raw=true" alt="Sobrepeso">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/body_sobrepeso-Cp8blCgD.jpg?raw=true" alt="Sobrepeso">
         Sobrepeso
       </div>
       <div class="body-card" onclick="selectBody(this,'acima')">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2021_00_52.png?raw=true" alt="Acima do peso">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2021_00_52.png?raw=true" alt="Acima do peso">
         Acima do peso
       </div>
       <div class="body-card" onclick="selectBody(this,'plus')">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2020_59_22.png?raw=true" alt="Plus size">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2020_59_22.png?raw=true" alt="Plus size">
         Plus size
       </div>
     </div>
@@ -262,7 +262,7 @@
     <h2 class="step-title">Quais áreas você <span class="text-primary">quer perder gordura?</span></h2>
     <p class="step-subtitle">Toque nas áreas desejadas.</p>
     <div class="area-layout">
-      <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/body_silhouette_new-BD3Ymrmf.png?raw=true"
+      <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/body_silhouette_new-BD3Ymrmf.png?raw=true"
            alt="Silhueta" style="width:130px; flex-shrink:0; border-radius:var(--radius);">
       <div class="area-list">
         <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Papada</div>
@@ -284,7 +284,7 @@
   <div class="step" id="step-5">
     <h2 class="step-title">Sim, até as famosas estão usando! ⭐</h2>
     <p class="step-subtitle">A Gelatina Mounjaro é tendência entre celebridades e influenciadoras.</p>
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/famosa_materia-2MKZVYkz.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/famosa_materia-2MKZVYkz.png?raw=true"
          alt="Famosas" style="width:100%; border-radius:var(--radius); object-fit:cover;">
     <div class="card" style="text-align:center;">
       <p style="font-size:0.92rem;font-weight:700;color:var(--muted);">O protocolo que ativa o <strong style="color:var(--primary)">GLP-1</strong> — o mesmo hormônio do Mounjaro — de forma <strong>100% natural e caseira</strong>.</p>
@@ -387,7 +387,7 @@
       <div class="benefit-row"><div class="check">✓</div> Ativa o <strong>GLP-1</strong> do seu corpo</div>
       <div class="benefit-row"><div class="check">✓</div> Resultado visível em poucas semanas</div>
     </div>
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2021_13_18.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2021_13_18.png?raw=true"
          alt="Resultado" style="width:100%; border-radius:var(--radius); object-fit:cover;">
     <button class="btn-primary" onclick="nextStep()">Quero esse resultado! →</button>
   </div>
@@ -438,7 +438,7 @@
        PASSO 15 — OBJETIVO (com imagem)
   ══════════════════════════════════ -->
   <div class="step" id="step-15">
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_resultado-CbO72sN0.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_resultado-CbO72sN0.png?raw=true"
          alt="Resultado" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:240px;">
     <h2 class="step-title">Esse é um ótimo objetivo, <span class="text-primary" id="name-obj">linda</span>!</h2>
     <div class="card" style="text-align:center;">
@@ -533,7 +533,7 @@
       <div class="benefit-row"><div class="check">✓</div> Menos impulsos por doces</div>
       <div class="benefit-row"><div class="check">✓</div> Fácil de fazer e seguir</div>
     </div>
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/antes_depois-CVE1AG-r.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/antes_depois-CVE1AG-r.png?raw=true"
          alt="Antes e depois" style="width:100%;border-radius:var(--radius);object-fit:cover;">
     <div style="text-align:center;">
       <p style="font-size:1.1rem;font-weight:900;">"Perdi 12kg em 5 semanas!"</p>
@@ -549,7 +549,7 @@
   <div class="step" id="step-21">
     <h2 class="step-title">Como funciona a <span class="text-primary">Gelatina Mounjaro?</span></h2>
     <p class="step-subtitle">Simples, prático e eficaz</p>
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/before_after_v2-BwdiI3Uv.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/before_after_v2-BwdiI3Uv.png?raw=true"
          alt="Protocolo" style="width:100%;border-radius:var(--radius);object-fit:cover;">
     <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
       <div class="timeline-step">
@@ -572,7 +572,7 @@
        PASSO 22 — COMPROMISSO
   ══════════════════════════════════ -->
   <div class="step" id="step-22">
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/mulher_gelatina_calendario-CcxgGxU0.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/mulher_gelatina_calendario-CcxgGxU0.png?raw=true"
          alt="Compromisso" style="width:100%;border-radius:var(--radius);object-fit:cover;max-height:200px;">
     <h2 class="step-title"><span class="text-primary">Você se compromete a aplicar o protocolo</span> por pelo menos 1 semana para poder ver os resultados?</h2>
     <div style="background:linear-gradient(135deg,hsl(280,70%,97%),hsl(330,82%,96%));border:2px solid hsl(280,50%,80%);border-radius:var(--radius);padding:14px 16px;width:100%;text-align:center;">
@@ -670,19 +670,19 @@
     <p class="step-subtitle">Veja quem já transformou o corpo com a Gelatina Mounjaro</p>
     <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
       <div class="testimonial">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_giovanna-4g6mJveF.png?raw=true" alt="Giovanna">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_giovanna-4g6mJveF.png?raw=true" alt="Giovanna">
         <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Bizarro... Perdi 7kg em 3 semanas!"</p><p class="t-name">Giovanna, 34 — São Paulo</p></div>
       </div>
       <div class="testimonial">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_sandra-CUVcThLS.png?raw=true" alt="Sandra">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_sandra-CUVcThLS.png?raw=true" alt="Sandra">
         <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Minha barriga sumiu! Não acredito!"</p><p class="t-name">Sandra, 39 — Rio de Janeiro</p></div>
       </div>
       <div class="testimonial">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_extra-CRNnf4xW.png?raw=true" alt="Cláudia">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_extra-CRNnf4xW.png?raw=true" alt="Cláudia">
         <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Voltei a usar minhas roupas antigas!"</p><p class="t-name">Cláudia, 35 — Belo Horizonte</p></div>
       </div>
       <div class="testimonial">
-        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_claudia-DgxFsYSO.png?raw=true" alt="Patrícia">
+        <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_claudia-DgxFsYSO.png?raw=true" alt="Patrícia">
         <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Quem usa tem resultado 😍🙌"</p><p class="t-name">Patrícia, 31 — Curitiba</p></div>
       </div>
     </div>
@@ -729,7 +729,7 @@
     <p class="step-subtitle">Ele é exclusivo e gerado só uma vez, não saia dessa página para não perdê-lo</p>
 
     <!-- ANTES E DEPOIS -->
-    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/antes_depois_realistic-BQbSAZb6.png?raw=true"
+    <img loading="lazy" src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/antes_depois_realistic-BQbSAZb6.png?raw=true"
          alt="Antes e depois" style="width:100%;border-radius:var(--radius);object-fit:cover;">
 
     <!-- CARD PLANO -->
@@ -867,11 +867,17 @@
     if (n === 28) startLoading2();
     if (n === 29) startCountdown();
 
-    window.scrollTo({ top:0, behavior:'smooth' });
+    window.scrollTo({ top:0 });
   }
 
   function nextStep() {
     state.currentStep = Math.min(state.totalSteps, state.currentStep + 1);
+    showStep(state.currentStep);
+  }
+
+  function prevStep() {
+    if (state.currentStep <= 1) return;
+    state.currentStep--;
     showStep(state.currentStep);
   }
 
@@ -1016,6 +1022,16 @@
       secEl.textContent = String(total%60).padStart(2,'0');
     }, 1000);
   }
+
+  // Botão voltar — funciona em touch e click
+  const btnBack = document.getElementById('btn-back');
+  btnBack.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    prevStep();
+  }, { passive: false });
+  btnBack.addEventListener('click', function(e) {
+    prevStep();
+  });
 
   showStep(1);
 </script>
