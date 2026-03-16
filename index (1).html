@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocolo Gelatina</title>
+  <meta name="description" content="Gelatina Mounjaro: ative o GLP-1 naturalmente e perca até 12kg em 30 dias. Protocolo caseiro, 100% natural.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary:      hsl(280, 70%, 55%);
+      --primary-dark: hsl(280, 70%, 42%);
+      --green:        hsl(142, 71%, 45%);
+      --green-dark:   hsl(142, 71%, 35%);
+      --pink:         hsl(330, 80%, 55%);
+      --purple:       hsl(280, 70%, 55%);
+      --bg:           #faf8ff;
+      --text:         #1a1a2e;
+      --muted:        #6b7280;
+      --border:       #e5e7eb;
+      --radius:       14px;
+      --shadow:       0 4px 24px rgba(120,60,180,0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+    #app { width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding-bottom:50px; }
+
+    /* PROGRESS */
+    #progress-container { width:100%; max-width:480px; position:sticky; top:0; z-index:100; background:white; padding:10px 20px 8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    #progress-bar-track { width:100%; height:6px; background:#e9d5ff; border-radius:99px; overflow:hidden; }
+    #progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--purple),var(--pink)); border-radius:99px; transition:width 0.4s ease; }
+    #progress-label { font-size:0.72rem; color:var(--muted); text-align:right; margin-top:3px; }
+
+    /* STEPS */
+    .step { display:none; width:100%; padding:24px 20px 20px; flex-direction:column; align-items:center; gap:18px; animation:fadeUp 0.35s ease; }
+    .step.active { display:flex; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+    /* TYPOGRAPHY */
+    .step-title { font-size:1.35rem; font-weight:900; text-align:center; line-height:1.3; color:var(--text); }
+    .step-subtitle { font-size:0.95rem; color:var(--muted); text-align:center; margin-top:-10px; }
+    .text-primary { color:var(--primary); }
+    .text-pink { color:var(--pink); }
+    .bold { font-weight:800; }
+
+    /* BUTTONS */
+    .btn-primary { width:100%; padding:16px; border-radius:99px; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; color:white; background:linear-gradient(135deg,var(--purple),var(--pink)); box-shadow:0 6px 20px rgba(180,60,150,0.3); transition:transform 0.15s; text-decoration:none; display:block; text-align:center; }
+    .btn-primary:hover { transform:scale(1.03); }
+    .btn-primary:active { transform:scale(0.97); }
+    .btn-green { background:linear-gradient(135deg,var(--green),var(--green-dark)) !important; box-shadow:0 6px 20px rgba(40,180,80,0.3) !important; }
+    @keyframes ctaPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+    .btn-pulse { animation:ctaPulse 2s ease-in-out infinite; }
+
+    /* OPTION CARDS */
+    .option-list { display:flex; flex-direction:column; gap:10px; width:100%; }
+    .option-card { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:var(--radius); border:2px solid var(--border); background:white; cursor:pointer; font-size:1rem; font-weight:700; transition:border-color 0.2s,background 0.2s,transform 0.15s; text-align:left; width:100%; }
+    .option-card:hover { border-color:var(--primary); transform:scale(1.01); }
+    .option-card .emoji { font-size:1.5rem; }
+    .option-card .sub { font-size:0.8rem; font-weight:500; color:var(--muted); display:block; }
+
+    /* MULTI */
+    .multi-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; }
+    .multi-card { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:14px 10px; border-radius:var(--radius); border:2px solid var(--border); background:white; cursor:pointer; font-size:0.88rem; font-weight:700; text-align:center; transition:border-color 0.2s,background 0.2s; }
+    .multi-card:hover { border-color:var(--primary); }
+    .multi-card.selected { border-color:var(--primary); background:hsl(280,70%,97%); color:var(--primary); }
+    .multi-card .emoji { font-size:1.4rem; }
+    .error-msg { color:#dc2626; font-size:0.82rem; text-align:center; }
+
+    /* INPUT */
+    .text-input { width:100%; padding:14px 16px; border-radius:var(--radius); border:2px solid var(--border); font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700; outline:none; transition:border-color 0.2s; }
+    .text-input:focus { border-color:var(--primary); }
+    .number-input-wrap { display:flex; align-items:center; gap:10px; width:100%; justify-content:center; }
+    .num-btn { width:44px; height:44px; border-radius:50%; border:2px solid var(--primary); background:white; color:var(--primary); font-size:1.4rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s,color 0.15s; }
+    .num-btn:hover { background:var(--primary); color:white; }
+    .num-display { font-size:2.2rem; font-weight:900; color:var(--primary); min-width:90px; text-align:center; }
+    .num-unit { font-size:0.9rem; color:var(--muted); font-weight:600; text-align:center; }
+
+    /* CARDS */
+    .card { background:white; border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); width:100%; }
+    .highlight-box { background:linear-gradient(135deg,hsl(270,91%,97%),hsl(330,82%,96%)); border:1px solid hsl(270,50%,88%); border-radius:var(--radius); padding:16px; width:100%; }
+    .alert-box { background:#fff8f0; border:1px solid #f59e0b; border-radius:var(--radius); padding:14px 16px; width:100%; }
+
+    /* BENEFIT ROWS */
+    .benefit-row { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:0.95rem; font-weight:700; }
+    .benefit-row .check { width:22px; height:22px; border-radius:50%; background:var(--green); color:white; display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; }
+
+    /* BADGE */
+    .badge-green { display:inline-flex; align-items:center; gap:5px; background:hsl(142,71%,95%); color:var(--green-dark); border-radius:99px; padding:5px 12px; font-size:0.82rem; font-weight:700; }
+
+    /* BODY CARDS */
+    .body-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; }
+    .body-card { border:2px solid var(--border); border-radius:var(--radius); padding:10px 6px; text-align:center; cursor:pointer; font-weight:800; font-size:0.82rem; background:white; transition:border-color 0.2s,background 0.2s; overflow:hidden; }
+    .body-card:hover { border-color:var(--primary); }
+    .body-card.selected { border-color:var(--primary); background:hsl(280,70%,97%); color:var(--primary); }
+    .body-card img { width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:8px; margin-bottom:6px; display:block; }
+
+    /* AREA SELECTOR */
+    .area-layout { display:flex; gap:14px; width:100%; align-items:flex-start; }
+    .area-list { display:flex; flex-direction:column; gap:8px; flex:1; }
+    .area-card { border:2px solid var(--border); border-radius:var(--radius); padding:11px 14px; cursor:pointer; font-weight:700; font-size:0.88rem; background:white; transition:border-color 0.2s,background 0.2s; display:flex; align-items:center; gap:8px; }
+    .area-card.selected { border-color:var(--primary); background:hsl(280,70%,97%); color:var(--primary); }
+    .area-card .area-check { width:18px; height:18px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.65rem; transition:background 0.15s,border-color 0.15s; }
+    .area-card.selected .area-check { background:var(--primary); border-color:var(--primary); color:white; }
+
+    /* LOADING */
+    .loading-item { display:flex; align-items:center; gap:10px; font-size:0.95rem; font-weight:700; padding:8px 0; opacity:0; transition:opacity 0.4s; }
+    .loading-item.visible { opacity:1; }
+    .loading-dot { width:10px; height:10px; border-radius:50%; background:var(--primary); animation:dotPulse 1s infinite; flex-shrink:0; }
+    @keyframes dotPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+    /* COUNTDOWN */
+    .countdown { display:flex; gap:8px; justify-content:center; }
+    .countdown-block { background:white; border-radius:10px; padding:8px 14px; text-align:center; box-shadow:var(--shadow); }
+    .countdown-num { font-size:1.8rem; font-weight:900; color:var(--primary); }
+    .countdown-lbl { font-size:0.65rem; color:var(--muted); font-weight:700; text-transform:uppercase; }
+
+    /* TESTIMONIAL */
+    .testimonial { background:white; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); width:100%; }
+    .testimonial img { width:100%; display:block; }
+    .t-body { padding:10px 14px 14px; }
+    .testimonial .quote { font-size:0.95rem; font-weight:700; margin-top:4px; }
+    .testimonial .t-name { font-size:0.78rem; color:var(--muted); font-weight:600; margin-top:3px; }
+    .stars { color:#fbbf24; }
+
+    /* TIMELINE */
+    .timeline-step { display:flex; align-items:center; gap:14px; padding:12px 14px; border-radius:var(--radius); background:white; box-shadow:var(--shadow); width:100%; }
+    .timeline-icon { width:42px; height:42px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:900; flex-shrink:0; }
+
+    /* WEEK ROW */
+    .week-row { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:var(--radius); background:white; box-shadow:var(--shadow); width:100%; }
+
+    /* VIDEO */
+    .video-wrap { width:100%; border-radius:var(--radius); overflow:hidden; background:black; position:relative; padding-top:56.25%; }
+    .video-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
+    .video-progress-track { width:100%; height:8px; background:rgba(255,255,255,0.2); border-radius:99px; overflow:hidden; margin-top:8px; }
+    .video-progress-fill { height:100%; background:linear-gradient(90deg,var(--purple),var(--pink)); border-radius:99px; width:0%; transition:width 0.5s; }
+
+    /* STAT ROW */
+    .stat-row { display:flex; gap:10px; width:100%; }
+    .stat-box { flex:1; background:white; border-radius:var(--radius); padding:14px 10px; text-align:center; box-shadow:var(--shadow); }
+    .stat-num { font-size:1.5rem; font-weight:900; color:var(--primary); }
+    .stat-lbl { font-size:0.72rem; color:var(--muted); font-weight:700; }
+
+    /* OFFER */
+    .offer-header { background:linear-gradient(135deg,var(--purple),var(--pink)); border-radius:var(--radius) var(--radius) 0 0; padding:18px; text-align:center; color:white; width:100%; }
+    .price-old { font-size:0.95rem; color:var(--muted); text-decoration:line-through; font-weight:700; }
+    .price-new { font-size:3rem; font-weight:900; color:var(--green); line-height:1; }
+    .price-inst { font-size:0.88rem; color:var(--muted); font-weight:700; }
+
+    /* FAQ */
+    details { border:1px solid var(--border); border-radius:var(--radius); width:100%; overflow:hidden; }
+    summary { padding:14px 16px; font-weight:800; cursor:pointer; font-size:0.95rem; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+    summary::after { content:"▼"; font-size:0.7rem; color:var(--muted); }
+    details[open] summary::after { content:"▲"; }
+    .faq-answer { padding:0 16px 14px; font-size:0.88rem; color:var(--muted); font-weight:600; line-height:1.6; }
+
+    /* GUARANTEE */
+    .guarantee-box { background:white; border:2px solid var(--green); border-radius:var(--radius); padding:18px; text-align:center; width:100%; }
+
+    .divider { width:100%; height:1px; background:var(--border); }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-thumb { background:#d8b4fe; border-radius:99px; }
+  </style>
+</head>
+<body>
+
+<div id="progress-container" style="display:none;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+    <button onclick="prevStep()" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:8px;color:var(--muted);font-size:1.1rem;font-weight:800;display:flex;align-items:center;transition:background 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'" title="Voltar">&#8592;</button>
+    <div id="progress-bar-track" style="flex:1;"><div id="progress-bar-fill" style="width:0%"></div></div>
+  </div>
+  <div id="progress-label">Passo <span id="prog-cur">1</span> de <span id="prog-total">28</span></div>
+</div>
+
+<div id="app">
+
+  <!-- ══════════════════════════════════
+       PASSO 1 — WELCOME
+  ══════════════════════════════════ -->
+  <div class="step active" id="step-1">
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
+         alt="Logo Mounjaro" style="width:180px; object-fit:contain; margin-top:6px;">
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_mounjaro-9GIFZ8IF.jpg?raw=true"
+         alt="Gelatina Mounjaro" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:260px;">
+    <h1 class="step-title">Descubra como ativar seu metabolismo e perder até <span class="text-pink bold">12kg em 30 dias</span></h1>
+    <p class="step-subtitle">Com ingredientes caseiros que você prepara em minutos.</p>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num">+12kg</div><div class="stat-lbl">Perda média em 30 dias</div></div>
+      <div class="stat-box"><div class="stat-num">100%</div><div class="stat-lbl">Natural & caseiro</div></div>
+      <div class="stat-box"><div class="stat-num">R$15</div><div class="stat-lbl">Por semana apenas</div></div>
+    </div>
+    <button class="btn-primary btn-pulse" onclick="nextStep()">Quero saber se funciona para mim! 🔥</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 2 — INÍCIO QUIZ
+  ══════════════════════════════════ -->
+  <div class="step" id="step-2">
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/logo_mounjaro-C60-3xGs.png?raw=true"
+         alt="Logo Mounjaro" style="width:160px; object-fit:contain;">
+    <h2 class="step-title">Vamos começar sua jornada! 🚀</h2>
+    <p class="step-subtitle">Responda algumas perguntas rápidas para personalizar seu plano.</p>
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_mounjaro-9GIFZ8IF.jpg?raw=true"
+         alt="Gelatina Mounjaro" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:240px;">
+    <button class="btn-primary" onclick="nextStep()">Vamos lá! 💪</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 3 — TIPO DE CORPO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-3">
+    <h2 class="step-title">Como você classifica <span class="text-primary">o seu corpo?</span></h2>
+    <p class="step-subtitle">Selecione a opção que melhor te descreve</p>
+    <div class="body-options">
+      <div class="body-card" onclick="selectBody(this,'medio')">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2020_50_06.png?raw=true" alt="Médio">
+        Médio
+      </div>
+      <div class="body-card" onclick="selectBody(this,'sobrepeso')">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/body_sobrepeso-Cp8blCgD.jpg?raw=true" alt="Sobrepeso">
+        Sobrepeso
+      </div>
+      <div class="body-card" onclick="selectBody(this,'acima')">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2021_00_52.png?raw=true" alt="Acima do peso">
+        Acima do peso
+      </div>
+      <div class="body-card" onclick="selectBody(this,'plus')">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2020_59_22.png?raw=true" alt="Plus size">
+        Plus size
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-body" style="display:none;" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 4 — ÁREAS (silhueta)
+  ══════════════════════════════════ -->
+  <div class="step" id="step-4">
+    <h2 class="step-title">Quais áreas você <span class="text-primary">quer perder gordura?</span></h2>
+    <p class="step-subtitle">Toque nas áreas desejadas.</p>
+    <div class="area-layout">
+      <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/body_silhouette_new-BD3Ymrmf.png?raw=true"
+           alt="Silhueta" style="width:130px; flex-shrink:0; border-radius:var(--radius);">
+      <div class="area-list">
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Papada</div>
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Braços</div>
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Barriga</div>
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Cintura</div>
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Glúteo</div>
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Coxa</div>
+        <div class="area-card" onclick="toggleArea(this)"><div class="area-check">✓</div>Corpo todo</div>
+      </div>
+    </div>
+    <p class="error-msg" id="area-error" style="display:none;">Selecione alguma área.</p>
+    <button class="btn-primary" onclick="checkAreas()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 5 — FAMOSAS
+  ══════════════════════════════════ -->
+  <div class="step" id="step-5">
+    <h2 class="step-title">Sim, até as famosas estão usando! ⭐</h2>
+    <p class="step-subtitle">A Gelatina Mounjaro é tendência entre celebridades e influenciadoras.</p>
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/famosa_materia-2MKZVYkz.png?raw=true"
+         alt="Famosas" style="width:100%; border-radius:var(--radius); object-fit:cover;">
+    <div class="card" style="text-align:center;">
+      <p style="font-size:0.92rem;font-weight:700;color:var(--muted);">O protocolo que ativa o <strong style="color:var(--primary)">GLP-1</strong> — o mesmo hormônio do Mounjaro — de forma <strong>100% natural e caseira</strong>.</p>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Eu quero esse resultado! 🔥</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 6 — NOME
+  ══════════════════════════════════ -->
+  <div class="step" id="step-6">
+    <h2 class="step-title">Qual é o seu <span class="text-primary">nome?</span></h2>
+    <p class="step-subtitle">Para personalizarmos sua experiência.</p>
+    <input class="text-input" id="input-name" type="text" placeholder="Seu primeiro nome" oninput="saveName(this.value)">
+    <button class="btn-primary" onclick="checkName()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 7 — IMPACTO (4 opções)
+  ══════════════════════════════════ -->
+  <div class="step" id="step-7">
+    <h2 class="step-title"><span id="name-impact">Linda</span>, como o peso <span class="text-primary">afeta sua vida?</span></h2>
+    <p class="step-subtitle">Entender isso nos ajuda a criar seu protocolo ideal</p>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'impact','autoestima')">
+        <span class="emoji">💔</span>
+        <div><span>Afeta minha autoestima</span><span class="sub">Me sinto insegura com meu corpo</span></div>
+      </button>
+      <button class="option-card" onclick="selectAndNext(this,'impact','saude')">
+        <span class="emoji">🏥</span>
+        <div><span>Afeta minha saúde</span><span class="sub">Sinto cansaço, dores e falta de energia</span></div>
+      </button>
+      <button class="option-card" onclick="selectAndNext(this,'impact','relacionamentos')">
+        <span class="emoji">👥</span>
+        <div><span>Afeta meus relacionamentos</span><span class="sub">Evito encontros e situações sociais</span></div>
+      </button>
+      <button class="option-card" onclick="selectAndNext(this,'impact','rotina')">
+        <span class="emoji">📅</span>
+        <div><span>Afeta minha rotina</span><span class="sub">Dificuldade em fazer tarefas simples</span></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 8 — APARÊNCIA
+  ══════════════════════════════════ -->
+  <div class="step" id="step-8">
+    <h2 class="step-title">Você está feliz com <span class="text-primary">sua aparência atual?</span></h2>
+    <p class="step-subtitle">Seja sincera consigo mesma</p>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'happiness','nao')"><span class="emoji">😮‍💨</span> Não estou feliz</button>
+      <button class="option-card" onclick="selectAndNext(this,'happiness','poderia')"><span class="emoji">😐</span> Poderia ser melhor</button>
+      <button class="option-card" onclick="selectAndNext(this,'happiness','sim')"><span class="emoji">😊</span> Estou satisfeita</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 9 — BARREIRAS
+  ══════════════════════════════════ -->
+  <div class="step" id="step-9">
+    <h2 class="step-title">O que te impede de <span class="text-primary">emagrecer?</span></h2>
+    <p class="step-subtitle">Selecione todas as barreiras que você enfrenta</p>
+    <div class="multi-grid">
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">💰</span>Questões financeiras</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">😤</span>Falta de motivação</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">⏰</span>Falta de tempo</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">📉</span>Falta de constância</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">🍟</span>Ansiedade por comida</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">😴</span>Metabolismo lento</div>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 10 — OBJETIVOS
+  ══════════════════════════════════ -->
+  <div class="step" id="step-10">
+    <h2 class="step-title">O que você quer <span class="text-primary">conquistar?</span></h2>
+    <p class="step-subtitle">Selecione seus maiores objetivos</p>
+    <div class="multi-grid">
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">💪</span>Ter mais saúde</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">⚡</span>Ter mais energia</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">👗</span>Usar roupas que amo</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">🪶</span>Me sentir mais leve</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">😍</span>Mais autoestima</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">🏖️</span>Praia com confiança</div>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 11 — APRESENTAÇÃO PRODUTO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-11">
+    <div class="badge-green">✅ Ótimo! Encontramos algo para você</div>
+    <h2 class="step-title"><span class="text-pink bold">A Gelatina Mounjaro ativa a queima de gordura natural</span> com ingredientes caseiros que você prepara em minutos.</h2>
+    <div class="card">
+      <div class="benefit-row"><div class="check">✓</div> Fácil de preparar — 2x ao dia</div>
+      <div class="benefit-row"><div class="check">✓</div> Receita 100% Natural</div>
+      <div class="benefit-row"><div class="check">✓</div> Ativa o <strong>GLP-1</strong> do seu corpo</div>
+      <div class="benefit-row"><div class="check">✓</div> Resultado visível em poucas semanas</div>
+    </div>
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/ChatGPT%20Image%2015%20de%20mar.%20de%202026,%2021_13_18.png?raw=true"
+         alt="Resultado" style="width:100%; border-radius:var(--radius); object-fit:cover;">
+    <button class="btn-primary" onclick="nextStep()">Quero esse resultado! →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 12 — PESO ATUAL
+  ══════════════════════════════════ -->
+  <div class="step" id="step-12">
+    <h2 class="step-title">Qual é seu <span class="text-primary">peso atual?</span></h2>
+    <p class="step-subtitle">Seja sincera para um resultado preciso</p>
+    <div class="number-input-wrap">
+      <button class="num-btn" onclick="changeNum('weight',-1)">−</button>
+      <div><div class="num-display"><span id="val-weight">70</span></div><div class="num-unit">kg</div></div>
+      <button class="num-btn" onclick="changeNum('weight',1)">+</button>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 13 — ALTURA
+  ══════════════════════════════════ -->
+  <div class="step" id="step-13">
+    <h2 class="step-title">Qual é sua <span class="text-primary">altura?</span></h2>
+    <p class="step-subtitle">Precisamos disso para calcular seu IMC</p>
+    <div class="number-input-wrap">
+      <button class="num-btn" onclick="changeNum('height',-1)">−</button>
+      <div><div class="num-display"><span id="val-height">165</span></div><div class="num-unit">cm</div></div>
+      <button class="num-btn" onclick="changeNum('height',1)">+</button>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 14 — PESO DESEJADO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-14">
+    <h2 class="step-title">Qual é seu <span class="text-primary">peso desejado?</span></h2>
+    <p class="step-subtitle">Qual o peso que você sonha alcançar?</p>
+    <div class="number-input-wrap">
+      <button class="num-btn" onclick="changeNum('goalw',-1)">−</button>
+      <div><div class="num-display"><span id="val-goalw">58</span></div><div class="num-unit">kg</div></div>
+      <button class="num-btn" onclick="changeNum('goalw',1)">+</button>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 15 — OBJETIVO (com imagem)
+  ══════════════════════════════════ -->
+  <div class="step" id="step-15">
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/gelatina_resultado-CbO72sN0.png?raw=true"
+         alt="Resultado" style="width:100%; border-radius:var(--radius); object-fit:cover; max-height:240px;">
+    <h2 class="step-title">Esse é um ótimo objetivo, <span class="text-primary" id="name-obj">linda</span>!</h2>
+    <div class="card" style="text-align:center;">
+      <p style="font-weight:700;font-size:1rem;">Você gostaria de perder entre <span class="text-pink bold" id="kg-diff">12kg</span> em 30 dias?</p>
+      <p style="font-size:0.88rem;color:var(--muted);font-weight:600;margin-top:6px;">Baseado no seu perfil, esse resultado é totalmente alcançável com a Gelatina Mounjaro!</p>
+    </div>
+    <p style="font-size:0.9rem;color:var(--muted);font-weight:600;text-align:center;">Agora vamos ajustar o próximo passo para você começar a perceber diferença <strong>já nos primeiros dias.</strong></p>
+    <button class="btn-primary" onclick="nextStep()">Ok, Vamos lá! 🚀</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 16 — GESTAÇÕES
+  ══════════════════════════════════ -->
+  <div class="step" id="step-16">
+    <h2 class="step-title">Quantas <span class="text-primary">gestações</span> você já teve?</h2>
+    <p class="step-subtitle">Isso ajuda a personalizar seu plano.</p>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'preg','0')"><span class="emoji">🌱</span> Nunca estive grávida</button>
+      <button class="option-card" onclick="selectAndNext(this,'preg','1')"><span class="emoji">👶</span> 1 gestação</button>
+      <button class="option-card" onclick="selectAndNext(this,'preg','2')"><span class="emoji">👶👶</span> 2 gestações</button>
+      <button class="option-card" onclick="selectAndNext(this,'preg','3+')"><span class="emoji">👨‍👩‍👧‍👦</span> 3 ou mais gestações</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 17 — ROTINA
+  ══════════════════════════════════ -->
+  <div class="step" id="step-17">
+    <h2 class="step-title">Como é sua <span class="text-primary">rotina diária?</span></h2>
+    <p class="step-subtitle">Selecione todas as que se encaixam.</p>
+    <div class="multi-grid">
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">💼</span>Trabalho formal</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">🏠</span>Trabalho em casa</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">👨‍👩‍👧</span>Cuido da casa/família</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">📚</span>Estou estudando</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">🏋️</span>Pratico exercícios</div>
+      <div class="multi-card" onclick="toggleMulti(this)"><span class="emoji">😴</span>Sedentária</div>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 18 — SONO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-18">
+    <h2 class="step-title">Quantas horas você <span class="text-primary">dorme por noite?</span></h2>
+    <p class="step-subtitle">O sono é essencial para o emagrecimento.</p>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'sleep','<5')"><span class="emoji">😪</span> Menos de 5 horas</button>
+      <button class="option-card" onclick="selectAndNext(this,'sleep','5-7')"><span class="emoji">😴</span> 5–7 horas</button>
+      <button class="option-card" onclick="selectAndNext(this,'sleep','7-9')"><span class="emoji">😌</span> 7–9 horas</button>
+      <button class="option-card" onclick="selectAndNext(this,'sleep','>9')"><span class="emoji">💤</span> Mais de 9 horas</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 19 — HIDRATAÇÃO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-19">
+    <h2 class="step-title">Quanta água você <span class="text-primary">bebe por dia?</span></h2>
+    <p class="step-subtitle">A hidratação acelera resultados.</p>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'water','<1')"><span class="emoji">🚱</span> Menos de 1 litro</button>
+      <button class="option-card" onclick="selectAndNext(this,'water','1-2')"><span class="emoji">💧</span> 1–2 litros</button>
+      <button class="option-card" onclick="selectAndNext(this,'water','>2')"><span class="emoji">🌊</span> Mais de 2 litros</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 20 — ANÁLISE + IMC + DEPOIMENTO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-20">
+    <h2 class="step-title">Com base na sua <span class="text-primary">análise</span>, <span id="name-alert">amiga</span>…</h2>
+    <div class="alert-box">
+      <p style="color:#dc2626;font-weight:800;font-size:0.9rem;margin-bottom:8px;">⚠️ Sinais de alerta identificados:</p>
+      <div class="benefit-row"><div class="check" style="background:#dc2626;">✗</div> Metabolismo desacelerado</div>
+      <div class="benefit-row"><div class="check" style="background:#dc2626;">✗</div> Risco de acúmulo de gordura visceral</div>
+      <div class="benefit-row"><div class="check" style="background:#dc2626;">✗</div> Hormônios de saciedade desregulados</div>
+      <div style="margin-top:12px;padding:10px 12px;background:white;border-radius:10px;border-left:4px solid #dc2626;">
+        <p style="font-size:0.78rem;font-weight:700;color:var(--muted);">Seu IMC calculado:</p>
+        <p style="font-size:1.6rem;font-weight:900;color:#dc2626;" id="imc-value">—</p>
+        <p style="font-size:0.82rem;font-weight:800;color:#dc2626;" id="imc-label">—</p>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:0.92rem;font-weight:700;text-align:center;">🌿 O segredo para secar: <strong class="text-primary">Gelatina Mounjaro</strong> é o "interruptor" hormonal natural!</p>
+    </div>
+    <div class="highlight-box">
+      <div class="benefit-row"><div class="check">✓</div> Ativa o GLP-1 do seu corpo</div>
+      <div class="benefit-row"><div class="check">✓</div> Regula o seu Metabolismo</div>
+      <div class="benefit-row"><div class="check">✓</div> Leveza e corpo Desinchado</div>
+      <div class="benefit-row"><div class="check">✓</div> Menos impulsos por doces</div>
+      <div class="benefit-row"><div class="check">✓</div> Fácil de fazer e seguir</div>
+    </div>
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/antes_depois-CVE1AG-r.png?raw=true"
+         alt="Antes e depois" style="width:100%;border-radius:var(--radius);object-fit:cover;">
+    <div style="text-align:center;">
+      <p style="font-size:1.1rem;font-weight:900;">"Perdi 12kg em 5 semanas!"</p>
+      <p style="font-size:0.85rem;color:var(--muted);font-weight:700;margin-top:2px;">Maria, 32 anos — São Paulo</p>
+      <div class="stars" style="font-size:1rem;margin-top:4px;">⭐⭐⭐⭐⭐</div>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 21 — COMO FUNCIONA
+  ══════════════════════════════════ -->
+  <div class="step" id="step-21">
+    <h2 class="step-title">Como funciona a <span class="text-primary">Gelatina Mounjaro?</span></h2>
+    <p class="step-subtitle">Simples, prático e eficaz</p>
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/before_after_v2-BwdiI3Uv.png?raw=true"
+         alt="Protocolo" style="width:100%;border-radius:var(--radius);object-fit:cover;">
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+      <div class="timeline-step">
+        <div class="timeline-icon">1</div>
+        <div><strong>Prepare a Gelatina</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:3px;">Receita 100% natural com ingredientes do supermercado</p></div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon">2</div>
+        <div><strong>Consuma 2x ao dia</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:3px;">Manhã e antes de dormir</p></div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon">3</div>
+        <div><strong>Siga por 30 dias</strong><p style="font-size:0.82rem;color:var(--muted);margin-top:3px;">Veja a transformação acontecer</p></div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 22 — COMPROMISSO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-22">
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/mulher_gelatina_calendario-CcxgGxU0.png?raw=true"
+         alt="Compromisso" style="width:100%;border-radius:var(--radius);object-fit:cover;max-height:200px;">
+    <h2 class="step-title"><span class="text-primary">Você se compromete a aplicar o protocolo</span> por pelo menos 1 semana para poder ver os resultados?</h2>
+    <div style="background:linear-gradient(135deg,hsl(280,70%,97%),hsl(330,82%,96%));border:2px solid hsl(280,50%,80%);border-radius:var(--radius);padding:14px 16px;width:100%;text-align:center;">
+      <p style="font-weight:900;font-size:1rem;color:var(--primary);">Para liberar seu plano, preciso saber:</p>
+    </div>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'commit','sim')"><span class="emoji">😎</span> Quero começar hoje</button>
+      <button class="option-card" onclick="selectAndNext(this,'commit','talvez')"><span class="emoji">🧐</span> Não sei…</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 23 — LOADING 1
+  ══════════════════════════════════ -->
+  <div class="step" id="step-23">
+    <div style="text-align:center;font-size:3rem;">🔬</div>
+    <h2 class="step-title">Analisando suas informações…</h2>
+    <p class="step-subtitle">Aguarde enquanto preparamos seu plano personalizado</p>
+    <div id="loading1-items" style="width:100%;display:flex;flex-direction:column;gap:6px;">
+      <div class="loading-item" id="l1-1"><div class="loading-dot"></div>Analisando suas respostas...</div>
+      <div class="loading-item" id="l1-2"><div class="loading-dot"></div>Calculando seu metabolismo basal...</div>
+      <div class="loading-item" id="l1-3"><div class="loading-dot"></div>Avaliando seu perfil corporal...</div>
+      <div class="loading-item" id="l1-4"><div class="loading-dot"></div>Processando dados de saúde...</div>
+      <div class="loading-item" id="l1-5"><div class="loading-dot"></div>Preparando seu plano... ✅</div>
+    </div>
+    <div style="width:100%;background:#e9d5ff;border-radius:99px;height:12px;overflow:hidden;">
+      <div id="loading1-bar" style="height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:99px;width:0%;transition:width 0.4s;"></div>
+    </div>
+    <p id="loading1-pct" style="font-weight:900;color:var(--primary);text-align:center;font-size:1.2rem;">0%</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 24 — VÍDEO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-24">
+    <h2 class="step-title">Agora assista à explicação rápida de <span class="text-pink bold">1 Minuto</span> e entenda por que esse método está chamando atenção 👀</h2>
+    <div style="background:linear-gradient(135deg,hsl(45,90%,50%),hsl(35,95%,55%));border-radius:var(--radius);padding:10px 16px;text-align:center;font-weight:800;font-size:0.88rem;color:hsl(30,60%,15%);width:100%;animation:ctaPulse 1.5s ease-in-out infinite;">
+      ▶ Clique no vídeo para Assistir ⬇️
+    </div>
+    <!-- ⬇️ TROQUE o src pelo seu link de vídeo -->
+    <div class="video-wrap">
+      <iframe src="https://player-vz-de976c3f-628.tv.pandavideo.com.br/embed/?v=29e8b030-acfc-4cea-82cf-c292ce30757b"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div style="width:100%;background:#1a1a2e;border-radius:var(--radius);padding:12px 16px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:1.1rem;">🔒</span>
+        <span style="color:white;font-weight:700;font-size:0.88rem;">Assista para continuar…</span>
+      </div>
+      <div class="video-progress-track">
+        <div class="video-progress-fill" id="vid-progress"></div>
+      </div>
+      <p id="vid-pct" style="color:#d8b4fe;font-size:0.78rem;font-weight:700;margin-top:4px;">0%</p>
+    </div>
+    <button class="btn-primary" onclick="nextStep()">Já assisti, continuar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 25 — CORPO DOS SONHOS
+  ══════════════════════════════════ -->
+  <div class="step" id="step-25">
+    <h2 class="step-title">Qual o corpo dos <span class="text-primary">seus sonhos?</span></h2>
+    <p class="step-subtitle">Escolha sua meta.</p>
+    <div class="option-list">
+      <button class="option-card" onclick="selectAndNext(this,'goal_type','definida')" style="padding:22px 16px;">
+        <span class="emoji">🏋️‍♀️</span>
+        <span style="font-size:1.05rem;">Em forma e definida</span>
+      </button>
+      <button class="option-card" onclick="selectAndNext(this,'goal_type','saudavel')" style="padding:22px 16px;">
+        <span class="emoji">🌿</span>
+        <span style="font-size:1.05rem;">Natural e saudável</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 26 — RESULTADO PERSONALIZADO
+  ══════════════════════════════════ -->
+  <div class="step" id="step-26">
+    <div style="background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:var(--radius);padding:22px 20px;text-align:center;width:100%;color:white;">
+      <div style="font-size:2.5rem;">🎉</div>
+      <h2 style="font-size:1.25rem;font-weight:900;margin-top:10px;line-height:1.4;">
+        <span id="name-result">Linda</span>, você gostaria de perder entre <span style="color:#fde68a;">8 e 11 kilos</span> em poucas semanas?
+      </h2>
+      <p style="font-size:0.88rem;opacity:0.9;margin-top:8px;">Baseado no seu perfil, esse resultado é totalmente alcançável com a Gelatina Mounjaro!</p>
+    </div>
+    <button class="btn-primary btn-pulse" onclick="nextStep()">SIM! Quero muito começar! 🔥</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 27 — DEPOIMENTOS
+  ══════════════════════════════════ -->
+  <div class="step" id="step-27">
+    <h2 class="step-title">Histórias de Transformação</h2>
+    <p class="step-subtitle">Veja quem já transformou o corpo com a Gelatina Mounjaro</p>
+    <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
+      <div class="testimonial">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_giovanna-4g6mJveF.png?raw=true" alt="Giovanna">
+        <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Bizarro... Perdi 7kg em 3 semanas!"</p><p class="t-name">Giovanna, 34 — São Paulo</p></div>
+      </div>
+      <div class="testimonial">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_sandra-CUVcThLS.png?raw=true" alt="Sandra">
+        <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Minha barriga sumiu! Não acredito!"</p><p class="t-name">Sandra, 39 — Rio de Janeiro</p></div>
+      </div>
+      <div class="testimonial">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_extra-CRNnf4xW.png?raw=true" alt="Cláudia">
+        <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Voltei a usar minhas roupas antigas!"</p><p class="t-name">Cláudia, 35 — Belo Horizonte</p></div>
+      </div>
+      <div class="testimonial">
+        <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/transf_claudia-DgxFsYSO.png?raw=true" alt="Patrícia">
+        <div class="t-body"><div class="stars">★★★★★</div><p class="quote">"Quem usa tem resultado 😍🙌"</p><p class="t-name">Patrícia, 31 — Curitiba</p></div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="nextStep()" style="background:linear-gradient(135deg,hsl(45,90%,50%),hsl(35,95%,55%));color:hsl(30,60%,15%);box-shadow:0 6px 20px rgba(200,140,20,0.3);">Pegar meu protocolo ✨</button>
+    <button class="btn-primary btn-pulse" onclick="nextStep()">SIM! Quero muito começar! 🔥</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 28 — LOADING 2
+  ══════════════════════════════════ -->
+  <div class="step" id="step-28">
+    <div style="text-align:center;font-size:3rem;">⚙️</div>
+    <h2 class="step-title">Finalizando seu protocolo…</h2>
+    <p class="step-subtitle">Aguarde enquanto finalizamos tudo para você</p>
+    <div id="loading2-items" style="width:100%;display:flex;flex-direction:column;gap:6px;">
+      <div class="loading-item" id="l2-1"><div class="loading-dot"></div>Verificando seus dados...</div>
+      <div class="loading-item" id="l2-2"><div class="loading-dot"></div>Calculando déficit calórico...</div>
+      <div class="loading-item" id="l2-3"><div class="loading-dot"></div>Calculando metabolismo basal...</div>
+      <div class="loading-item" id="l2-4"><div class="loading-dot"></div>Avaliando perfil corporal...</div>
+      <div class="loading-item" id="l2-5"><div class="loading-dot"></div>Selecionando bônus exclusivos...</div>
+      <div class="loading-item" id="l2-6"><div class="loading-dot"></div>🎉 Análise concluída com sucesso!</div>
+    </div>
+    <div style="width:100%;background:#e9d5ff;border-radius:99px;height:12px;overflow:hidden;">
+      <div id="loading2-bar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--green-dark));border-radius:99px;width:0%;transition:width 0.4s;"></div>
+    </div>
+    <p id="loading2-pct" style="font-weight:900;color:var(--green);text-align:center;font-size:1.2rem;">0%</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PASSO 29 — OFERTA FINAL
+  ══════════════════════════════════ -->
+  <div class="step" id="step-29">
+
+    <!-- COUNTDOWN -->
+    <div style="text-align:center;width:100%;">
+      <p style="font-weight:800;font-size:0.9rem;color:#dc2626;margin-bottom:8px;">⏰ Seu protocolo expira em:</p>
+      <div class="countdown">
+        <div class="countdown-block"><div class="countdown-num" id="cd-min">09</div><div class="countdown-lbl">min</div></div>
+        <div class="countdown-block"><div class="countdown-num" id="cd-sec">39</div><div class="countdown-lbl">seg</div></div>
+      </div>
+    </div>
+
+    <h2 class="step-title"><span id="name-offer">Linda</span>, seu Plano da Gelatina de 30 dias foi Gerado com Sucesso!</h2>
+    <p class="step-subtitle">Ele é exclusivo e gerado só uma vez, não saia dessa página para não perdê-lo</p>
+
+    <!-- ANTES E DEPOIS -->
+    <img src="https://github.com/IsoulDemon/img-s-oferta---gelatina/blob/main/antes_depois_realistic-BQbSAZb6.png?raw=true"
+         alt="Antes e depois" style="width:100%;border-radius:var(--radius);object-fit:cover;">
+
+    <!-- CARD PLANO -->
+    <div style="width:100%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 32px rgba(120,60,180,0.2);">
+      <div class="offer-header">
+        <p style="font-size:0.78rem;font-weight:700;opacity:0.85;letter-spacing:2px;text-transform:uppercase;">Seu plano exclusivo</p>
+        <h3 style="font-size:1.4rem;font-weight:900;margin-top:6px;">1 Mês de Tratamento 🎯</h3>
+      </div>
+      <div style="background:white;padding:18px;display:flex;flex-direction:column;gap:14px;">
+
+        <!-- SEMANAS -->
+        <p style="font-weight:800;font-size:0.95rem;"><span id="name-weeks">Linda</span>, seguindo o protocolo certinho, veja o que vai acontecer:</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="week-row"><span style="font-size:1.3rem;">✨</span><div><div style="font-size:0.75rem;font-weight:700;color:var(--muted);">Semana 1</div><div style="font-weight:900;">Desincha e primeiros resultados</div></div></div>
+          <div class="week-row"><span style="font-size:1.3rem;">📉</span><div><div style="font-size:0.75rem;font-weight:700;color:var(--muted);">Semana 2</div><div style="font-weight:900;">Perda de até 3 kg</div></div></div>
+          <div class="week-row"><span style="font-size:1.3rem;">⚡</span><div><div style="font-size:0.75rem;font-weight:700;color:var(--muted);">Semana 3</div><div style="font-weight:900;">Perda de 5 a 7 kg</div></div></div>
+          <div class="week-row"><span style="font-size:1.3rem;">🔥</span><div><div style="font-size:0.75rem;font-weight:700;color:var(--muted);">Semana 4</div><div style="font-weight:900;">Perda de 9 a 12 kg</div></div></div>
+          <div class="week-row" style="background:linear-gradient(135deg,hsl(142,71%,95%),hsl(142,71%,88%));border:1px solid hsl(142,71%,70%);">
+            <span style="font-size:1.3rem;">🎉</span>
+            <div>
+              <div style="font-size:0.75rem;font-weight:800;color:var(--green-dark);">META</div>
+              <div style="font-weight:900;color:var(--green-dark);">Resultado esperado: -9 a 12 kg em 30 dias</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- INCLUSO -->
+        <div>
+          <p style="font-weight:900;font-size:0.9rem;text-align:center;margin-bottom:4px;color:var(--primary);">Gelatina Mounjaro + APP Protocolo Completo</p>
+          <p style="font-size:0.72rem;font-weight:800;text-align:center;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">ACESSO VITALÍCIO</p>
+          <div class="benefit-row"><div class="check">✓</div> Receita completa da Gelatina Mounjaro</div>
+          <div class="benefit-row"><div class="check">✓</div> Protocolo de 30 dias passo a passo</div>
+          <div class="benefit-row"><div class="check">✓</div> Acesso ao Aplicativo Exclusivo</div>
+          <div class="benefit-row"><div class="check">✓</div> Lista completa dos ingredientes</div>
+          <div class="benefit-row"><div class="check">✓</div> Dicas para acelerar resultados</div>
+          <div class="benefit-row"><div class="check">✓</div> Acesso vitalício ao app</div>
+        </div>
+
+        <!-- BÔNUS -->
+        <div class="highlight-box">
+          <div class="benefit-row"><div class="check">✓</div> 🎁 BÔNUS: Dietas completas</div>
+          <div class="benefit-row"><div class="check">✓</div> 🎁 BÔNUS: Receitas doces saudáveis</div>
+          <div class="benefit-row"><div class="check">✓</div> 🎁 BÔNUS: Aulas em vídeo de pilates na parede</div>
+        </div>
+
+        <!-- PREÇO -->
+        <div style="text-align:center;padding:16px 0;">
+          <p class="price-old">TUDO ISSO DE R$109,00</p>
+          <p style="font-weight:800;font-size:0.9rem;color:var(--muted);margin:4px 0;">POR APENAS</p>
+          <p class="price-new">R$ 27</p>
+          <p class="price-inst">Ou 6x de R$5,32</p>
+        </div>
+
+        <!-- ⬇️ TROQUE o href pelo seu checkout -->
+        <a href="https://pay.cakto.com.br/nz3kcsg" target="_blank" rel="noopener noreferrer"
+           class="btn-primary btn-pulse btn-green" style="font-size:1.1rem;font-weight:900;">
+          QUERO COMEÇAR 🥰
+        </a>
+      </div>
+    </div>
+
+    <!-- GARANTIA -->
+    <div class="guarantee-box">
+      <p style="font-size:2.5rem;">🛡️</p>
+      <h3 style="font-weight:900;font-size:1.1rem;color:var(--green);margin-top:6px;">Garantia de Reembolso</h3>
+      <p style="font-size:0.88rem;color:var(--muted);font-weight:600;margin-top:10px;line-height:1.6;">Todo produto é obrigado a dar no mínimo 7 dias de garantia, porém confiamos tanto na fórmula que oferecemos 30 dias corridos.</p>
+      <p style="font-size:0.88rem;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.6;">Ou seja, se você não gostar ou não funcionar pra você, nós reembolsaremos cada centavo que você pagou, sem questionar.</p>
+    </div>
+
+    <!-- ⬇️ TROQUE o href pelo seu checkout -->
+    <a href="https://pay.cakto.com.br/nz3kcsg" target="_blank" rel="noopener noreferrer"
+       class="btn-primary btn-pulse btn-green" style="font-size:1.1rem;font-weight:900;">
+      QUERO COMEÇAR 🥰
+    </a>
+
+    <!-- FAQ -->
+    <h3 style="font-weight:900;font-size:1.1rem;text-align:center;width:100%;">❓ Perguntas Frequentes</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;width:100%;">
+      <details><summary>A Gelatina Mounjaro realmente funciona?</summary><div class="faq-answer">Sim. A fórmula é baseada em ingredientes termogênicos comprovados que aceleram o metabolismo e queimam gordura localizada. Milhares de mulheres já comprovaram os resultados em até 30 dias.</div></details>
+      <details><summary>Quanto tempo leva para ver resultados?</summary><div class="faq-answer">A maioria das mulheres percebe diferença já na primeira semana. Resultados visíveis de perda de peso aparecem entre 7 e 14 dias seguindo o protocolo corretamente.</div></details>
+      <details><summary>É seguro? Tem efeitos colaterais?</summary><div class="faq-answer">100% seguro. São ingredientes naturais e caseiros. Não é remédio, não precisa de receita médica e não causa efeitos colaterais.</div></details>
+      <details><summary>Como vou receber o protocolo?</summary><div class="faq-answer">Imediatamente após o pagamento, você recebe acesso ao aplicativo exclusivo com a receita completa, protocolo de 30 dias e todos os bônus. Acesso vitalício e instantâneo.</div></details>
+      <details><summary>E se não funcionar pra mim?</summary><div class="faq-answer">Você tem 30 dias de garantia incondicional. Se não gostar ou não ver resultado, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia. O risco é ZERO.</div></details>
+      <details><summary>O pagamento é seguro?</summary><div class="faq-answer">Totalmente. Usamos plataforma de pagamento criptografada, a mesma utilizada por grandes empresas. Seus dados estão 100% protegidos.</div></details>
+      <details><summary>Preciso comprar ingredientes caros?</summary><div class="faq-answer">Não! Todos os ingredientes são baratos e encontrados em qualquer supermercado. Você gasta menos de R$15 por semana.</div></details>
+    </div>
+
+    <!-- ⬇️ TROQUE o href pelo seu checkout -->
+    <a href="https://pay.cakto.com.br/nz3kcsg" target="_blank" rel="noopener noreferrer"
+       class="btn-primary btn-pulse btn-green" style="font-size:1.15rem;font-weight:900;padding:18px;">
+      QUERO COMEÇAR 🥰
+    </a>
+    <p style="font-size:0.78rem;color:var(--muted);text-align:center;font-weight:700;">🔒 Compra 100% segura • Garantia de 30 dias</p>
+
+  </div><!-- /step-29 -->
+
+</div><!-- /app -->
+
+<script>
+  const state = {
+    currentStep: 1,
+    totalSteps: 29,
+    data: { name:'', weight:70, height:165, goalw:58 }
+  };
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('step-' + n);
+    if (el) el.classList.add('active');
+
+    // Step 1 = welcome (sem barra). Steps 2..29 = passos 1..28
+    const pb = document.getElementById('progress-container');
+    if (n === 1) {
+      pb.style.display = 'none';
+    } else {
+      pb.style.display = 'block';
+      const quizStep  = n - 1;          // passo atual do quiz (1 a 28)
+      const quizTotal = state.totalSteps - 1; // 28
+      const pct = Math.round((quizStep / quizTotal) * 100);
+      document.getElementById('progress-bar-fill').style.width = pct + '%';
+      document.getElementById('prog-cur').textContent  = quizStep;
+      document.getElementById('prog-total').textContent = quizTotal;
+    }
+
+    injectName();
+    if (n === 15) calcGoal();
+    if (n === 20) calcIMC();
+    if (n === 23) startLoading1();
+    if (n === 24) startVidProgress();
+    if (n === 28) startLoading2();
+    if (n === 29) startCountdown();
+
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  function nextStep() {
+    state.currentStep = Math.min(state.totalSteps, state.currentStep + 1);
+    showStep(state.currentStep);
+  }
+
+  function prevStep() {
+    if (state.currentStep <= 1) return;
+    state.currentStep--;
+    showStep(state.currentStep);
+  }
+
+  function selectAndNext(btn, key, val) { state.data[key] = val; nextStep(); }
+
+  function selectBody(card, val) {
+    document.querySelectorAll('.body-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.data.body = val;
+    document.getElementById('btn-body').style.display = 'block';
+  }
+
+  function toggleArea(card) {
+    card.classList.toggle('selected');
+    document.getElementById('area-error').style.display = 'none';
+  }
+
+  function checkAreas() {
+    const sel = document.querySelectorAll('#step-4 .area-card.selected');
+    if (sel.length === 0) { document.getElementById('area-error').style.display = 'block'; return; }
+    nextStep();
+  }
+
+  function toggleMulti(card) { card.classList.toggle('selected'); }
+
+  function saveName(val) { state.data.name = val.trim(); }
+
+  function checkName() {
+    if (!state.data.name) { document.getElementById('input-name').style.borderColor = '#dc2626'; return; }
+    nextStep();
+  }
+
+  function injectName() {
+    const n = state.data.name || 'linda';
+    ['name-obj','name-alert','name-result','name-offer','name-weeks','name-impact'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = n;
+    });
+  }
+
+  const numLimits = { weight:[30,200], height:[130,220], goalw:[30,200] };
+  function changeNum(key, delta) {
+    const [mn, mx] = numLimits[key];
+    state.data[key] = Math.min(mx, Math.max(mn, state.data[key] + delta));
+    document.getElementById('val-' + key).textContent = state.data[key];
+  }
+
+  function calcGoal() {
+    const diff = Math.max(1, state.data.weight - state.data.goalw);
+    const el = document.getElementById('kg-diff');
+    if (el) el.textContent = diff + 'kg';
+    const nm = document.getElementById('name-obj');
+    if (nm) nm.textContent = state.data.name || 'linda';
+  }
+
+  function calcIMC() {
+    const w = state.data.weight;
+    const h = state.data.height / 100;
+    const imc = w / (h * h);
+    const imcEl = document.getElementById('imc-value');
+    const lblEl = document.getElementById('imc-label');
+    if (!imcEl) return;
+    imcEl.textContent = imc.toFixed(1);
+    let lbl = '';
+    if (imc < 18.5) lbl = 'Abaixo do peso';
+    else if (imc < 25) lbl = 'Peso normal';
+    else if (imc < 30) lbl = 'Sobrepeso';
+    else if (imc < 35) lbl = 'Obesidade Grau I';
+    else if (imc < 40) lbl = 'Obesidade Grau II';
+    else lbl = 'Obesidade Grau III';
+    lblEl.textContent = lbl;
+    const nm = document.getElementById('name-alert');
+    if (nm) nm.textContent = state.data.name || 'amiga';
+  }
+
+  function runLoading(prefix, count, barId, pctId, speed, barColor, onDone) {
+    const items = [];
+    for (let i = 1; i <= count; i++) {
+      const el = document.getElementById(prefix + i);
+      if (el) { el.classList.remove('visible'); items.push(el); }
+    }
+    const bar = document.getElementById(barId);
+    const pct = document.getElementById(pctId);
+    if (bar) bar.style.width = '0%';
+    if (pct) pct.textContent = '0%';
+
+    let progress = 0, idx = 0;
+    const barIv = setInterval(() => {
+      progress = Math.min(100, progress + speed);
+      if (bar) bar.style.width = progress + '%';
+      if (pct) pct.textContent = Math.floor(progress) + '%';
+      if (progress >= 100) clearInterval(barIv);
+    }, 100);
+
+    const itemIv = setInterval(() => {
+      if (idx < items.length) { items[idx].classList.add('visible'); idx++; }
+      else { clearInterval(itemIv); if (onDone) setTimeout(onDone, 700); }
+    }, 1000);
+  }
+
+  function startLoading1() { runLoading('l1-', 5, 'loading1-bar', 'loading1-pct', 2, null, nextStep); }
+  function startLoading2() { runLoading('l2-', 6, 'loading2-bar', 'loading2-pct', 1.7, null, nextStep); }
+
+  let vidInterval = null;
+  function startVidProgress() {
+    const fill = document.getElementById('vid-progress');
+    const pct = document.getElementById('vid-pct');
+    if (fill) fill.style.width = '0%';
+    if (pct) pct.textContent = '0%';
+    let p = 0;
+    if (vidInterval) clearInterval(vidInterval);
+    vidInterval = setInterval(() => {
+      p = Math.min(100, p + 1);
+      if (fill) fill.style.width = p + '%';
+      if (pct) pct.textContent = p + '%';
+      if (p >= 100) clearInterval(vidInterval);
+    }, 600);
+  }
+
+  function startCountdown() {
+    let total = 9 * 60 + 39;
+    const minEl = document.getElementById('cd-min');
+    const secEl = document.getElementById('cd-sec');
+    if (!minEl) return;
+    const iv = setInterval(() => {
+      if (total <= 0) { clearInterval(iv); return; }
+      total--;
+      minEl.textContent = String(Math.floor(total/60)).padStart(2,'0');
+      secEl.textContent = String(total%60).padStart(2,'0');
+    }, 1000);
+  }
+
+  showStep(1);
+</script>
+</body>
+</html>
